@@ -11,13 +11,13 @@ from addres import Addres
 class AddNewAddress(unittest.TestCase):
     def setUp(self):
         self.wd()
-        self.driver.implicitly_wait(30)
+        self.wd.implicitly_wait(30)
 
     def wd(self):
-        self.driver = webdriver.Firefox()
+        self.wd = webdriver.Firefox()
 
     def test_add_new_address(self):
-        wd = self.driver
+        wd = self.wd
         self.open_home_page(wd)
         self.login(wd)
         self.create_address(wd, Addres(firstname="aaaa", middlename="mmmm", lastname="bbbbb", nickname="abacdccc", title="tttttttt", company="cccccccccccc", address="adrrr", home="123456789", mobile="111222333", work="wwwwwww", fax="ffffff", mail='mail@wp.pl', mail2="mail2@wp.pl", mail3="mail3@wp.pl", homepage="hhhh", bday="11", bmonth="January", byear="2000", address2="23233", phone2="1234567890", notes="notttttttt"))
@@ -110,18 +110,18 @@ class AddNewAddress(unittest.TestCase):
         wd.get("http://localhost/addressbook/")
 
     def is_element_present(self, how, what):
-        try: self.driver.find_element(by=how, value=what)
+        try: self.wd.find_element(by=how, value=what)
         except NoSuchElementException as e: return False
         return True
     
     def is_alert_present(self):
-        try: self.driver.switch_to_alert()
+        try: self.wd.switch_to_alert()
         except NoAlertPresentException as e: return False
         return True
 
 
     def tearDown(self):
-        self.driver.quit()
+        self.wd.quit()
 
 if __name__ == "__main__":
     unittest.main()
