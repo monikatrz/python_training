@@ -23,6 +23,7 @@ class AddresHelper:
     def edit_first_address(self, addres):
         wd = self.app.wd
         # select edit
+        self.open_home()
         wd.find_element_by_xpath("//img[@alt='Edit']").click()
         self.fill_form(addres)
         # submit address edit
@@ -97,7 +98,12 @@ class AddresHelper:
     def delete_first_address2(self):
         wd = self.app.wd
         # select first address
+        self.open_home()
         wd.find_element_by_name("selected[]").click()
         self.accept_next_alert = True
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
+
+    def open_home(self):
+        wd = self.app.wd
+        wd.find_element_by_link_text("home").click()
