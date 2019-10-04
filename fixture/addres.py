@@ -13,14 +13,15 @@ class AddresHelper:
         self.fill_form(addres)
         # submit address creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
+        self.addres_cache = None
 
-    def delete_first_address(self):
-        wd = self.app.wd
-        # select first address
-        self.open_home()
-        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+#    def delete_first_address(self):
+#        wd = self.app.wd
+#        # select first address
+#        self.open_home()
+#        wd.find_element_by_xpath("//img[@alt='Edit']").click()
         # submit deletion
-        wd.find_element_by_xpath("(//input[@name='update'])[3]").click()
+#        wd.find_element_by_xpath("(//input[@name='update'])[3]").click()
 
     def edit_first_address(self, addres):
         wd = self.app.wd
@@ -30,6 +31,7 @@ class AddresHelper:
         self.fill_form(addres)
         # submit address edit
         wd.find_element_by_name("update").click()
+        self.addres_cache = None
 
     def fill_form(self, addres):
         wd = self.app.wd
@@ -131,6 +133,7 @@ class AddresHelper:
         self.accept_next_alert = True
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
+        self.addres_cache = None
 
     def open_home(self):
         wd = self.app.wd
@@ -142,14 +145,17 @@ class AddresHelper:
         self.open_home()
         return len(wd.find_elements_by_name("selected[]"))
 
+    addres_cache = None
+
     def get_addres_list(self):
-        wd = self.app.wd
-        self.open_home()
-        address = []
-        for element in wd.find_elements_by_name("entry"): #row
-            id = element.find_element_by_name("selected[]").get_attribute("value")
-            cells = element.find_elements_by_tag_name("td")
-            lastname_text = cells[1].text
-            firstname_text = cells[2].text
-            address.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id))
-        return address
+        if self.addres_cache is None:
+            wd = self.app.wd
+            self.open_home()
+            self.addres_cache = []
+            for element in wd.find_elements_by_name("entry"): #row
+                id = element.find_element_by_name("selected[]").get_attribute("value")
+                cells = element.find_elements_by_tag_name("td")
+                lastname_text = cells[1].text
+                firstname_text = cells[2].text
+                self.addres_cache.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id))
+            return list(self.addres_cache)
