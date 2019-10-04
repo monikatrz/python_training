@@ -3,6 +3,12 @@ from model.addres import Addres
 
 
 def test_delete_first_address2(app):
+    addres = Addres(firstname="nnnnnnnnnnnnn", middlename="cccccccccc", lastname="tttgggttttt")
     if app.addres.count() == 0:
-        app.addres.create(Addres(firstname="aaaa", middlename="mmmm", lastname="bbbbb", nickname="abacdccc", title="tttttttt", company="cccccccccccc", address="adrrr", home="123456789", mobile="111222333", work="wwwwwww", fax="ffffff", mail='mail@wp.pl', mail2="mail2@wp.pl", mail3="mail3@wp.pl", homepage="hhhh", address2="23233", phone2="1234567890", notes="notttttttt"))
+       app.addres.create(addres)
+    old_addres = app.addres.get_addres_list()
     app.addres.delete_first_address2()
+    new_addres = app.addres.get_addres_list()
+    assert len(old_addres) - 1 == len(new_addres)
+    old_addres[0:1] = []
+    assert old_addres == new_addres

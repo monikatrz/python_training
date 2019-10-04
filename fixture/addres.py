@@ -114,14 +114,14 @@ class AddresHelper:
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
 
-    def delete_all_address(self):
-        wd = self.app.wd
-        # select first address
-        self.open_home()
-        wd.find_element_by_id("MassCB").click()
-        self.accept_next_alert = True
-        wd.find_element_by_xpath("//input[@value='Delete']").click()
-        wd.switch_to_alert().accept()
+ #   def delete_all_address(self):
+ #       wd = self.app.wd
+ #       # select first address
+ #       self.open_home()
+ #       wd.find_element_by_id("MassCB").click()
+ #       self.accept_next_alert = True
+ #       wd.find_element_by_xpath("//input[@value='Delete']").click()
+ #       wd.switch_to_alert().accept()
 
     def delete_first_address2(self):
         wd = self.app.wd
@@ -134,10 +134,22 @@ class AddresHelper:
 
     def open_home(self):
         wd = self.app.wd
-        if not (wd.current_url.endswith("addressbook/.php")):
+        if not (wd.current_url.endswith("/addressbook/")):
             wd.find_element_by_link_text("home").click()
 
     def count(self):
         wd = self.app.wd
         self.open_home()
         return len(wd.find_elements_by_name("selected[]"))
+
+    def get_addres_list(self):
+        wd = self.app.wd
+        self.open_home()
+        address = []
+        for element in wd.find_elements_by_name("entry"): #row
+            id = element.find_element_by_name("selected[]").get_attribute("value")
+            cells = element.find_elements_by_tag_name("td")
+            lastname_text = cells[1].text
+            firstname_text = cells[2].text
+            address.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id))
+        return address
