@@ -23,11 +23,22 @@ class AddresHelper:
         # submit deletion
 #        wd.find_element_by_xpath("(//input[@name='update'])[3]").click()
 
-    def edit_first_address(self, addres):
+    def edit_first_addres(self):
+        self.edit_addres_by_index(0)
+
+    def select_addres_edit(self):
+        wd = self.app.wd
+        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+
+    def select_addres_edit_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
+
+    def edit_addres_by_index(self, index, addres):
         wd = self.app.wd
         # select edit
         self.open_home()
-        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+        self.select_addres_edit_by_index(index)
         self.fill_form(addres)
         # submit address edit
         wd.find_element_by_name("update").click()
@@ -125,11 +136,22 @@ class AddresHelper:
  #       wd.find_element_by_xpath("//input[@value='Delete']").click()
  #       wd.switch_to_alert().accept()
 
+    def select_first_addres(self):
+        wd = self.app.wd
+        wd.find_element_by_name("selected[]").click()
+
+    def select_addres_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_name("selected[]")[index].click()
+
     def delete_first_address2(self):
+        self.delete_addres_by_index(0)
+
+    def delete_addres_by_index(self, index):
         wd = self.app.wd
         # select first address
         self.open_home()
-        wd.find_element_by_name("selected[]").click()
+        self.select_addres_by_index(index)
         self.accept_next_alert = True
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
