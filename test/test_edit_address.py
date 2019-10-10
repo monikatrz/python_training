@@ -4,7 +4,7 @@ from random import randrange
 
 def test_edit_some_addres(app):
     if app.addres.count() == 0:
-        app.addres.create(addres)
+        app.addres.create(Addres(firstname="jestem"))
     old_addres = app.addres.get_addres_list()
     index = randrange(len(old_addres))
     addres = Addres(firstname="nnnnnnnnnnnnn", middlename="cccccccccc", lastname="tttgggttttt")

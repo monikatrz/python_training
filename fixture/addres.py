@@ -1,5 +1,6 @@
 __author__ = 'monika'
 from model.addres import Addres
+import re
 
 class AddresHelper:
 
@@ -30,14 +31,10 @@ class AddresHelper:
         wd = self.app.wd
         wd.find_element_by_xpath("//img[@alt='Edit']").click()
 
-    def select_addres_edit_by_index(self, index):
-        wd = self.app.wd
-        wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
-
     def edit_addres_by_index(self, index, addres):
         wd = self.app.wd
         # select edit
-        self.open_home()
+     #   self.open_home()
         self.select_addres_edit_by_index(index)
         self.fill_form(addres)
         # submit address edit
@@ -64,61 +61,6 @@ class AddresHelper:
         self.change_field_value("address2", addres.address2)
         self.change_field_value("phone2", addres.phone2)
         self.change_field_value("notes", addres.notes)
-
-        # wd.find_element_by_name("firstname").click()
-        # wd.find_element_by_name("firstname").clear()
-        # wd.find_element_by_name("firstname").send_keys(addres.firstname)
-        # wd.find_element_by_name("middlename").click()
-        # wd.find_element_by_name("middlename").clear()
-        # wd.find_element_by_name("middlename").send_keys(addres.middlename)
-        # wd.find_element_by_name("lastname").click()
-        # wd.find_element_by_name("lastname").clear()
-        # wd.find_element_by_name("lastname").send_keys(addres.lastname)
-        # wd.find_element_by_name("nickname").click()
-        # wd.find_element_by_name("nickname").clear()
-        # wd.find_element_by_name("nickname").send_keys(addres.nickname)
-        # wd.find_element_by_name("title").click()
-        # wd.find_element_by_name("title").clear()
-        # wd.find_element_by_name("title").send_keys(addres.title)
-        # wd.find_element_by_name("company").click()
-        # wd.find_element_by_name("company").clear()
-        # wd.find_element_by_name("company").send_keys(addres.company)
-        # wd.find_element_by_name("address").click()
-        # wd.find_element_by_name("address").clear()
-        # wd.find_element_by_name("address").send_keys(addres.address)
-        # wd.find_element_by_name("home").click()
-        # wd.find_element_by_name("home").clear()
-        # wd.find_element_by_name("home").send_keys(addres.home)
-        # wd.find_element_by_name("mobile").click()
-        # wd.find_element_by_name("mobile").clear()
-        # wd.find_element_by_name("mobile").send_keys(addres.mobile)
-        # wd.find_element_by_name("work").click()
-        # wd.find_element_by_name("work").clear()
-        # wd.find_element_by_name("work").send_keys(addres.work)
-        # wd.find_element_by_name("fax").click()
-        # wd.find_element_by_name("fax").clear()
-        # wd.find_element_by_name("fax").send_keys(addres.fax)
-        # wd.find_element_by_name("email").click()
-        # wd.find_element_by_name("email").clear()
-        # wd.find_element_by_name("email").send_keys(addres.mail)
-        # wd.find_element_by_name("email2").click()
-        # wd.find_element_by_name("email2").clear()
-        # wd.find_element_by_name("email2").send_keys(addres.mail2)
-        # wd.find_element_by_name("email3").click()
-        # wd.find_element_by_name("email3").clear()
-        # wd.find_element_by_name("email3").send_keys(addres.mail3)
-        # wd.find_element_by_name("homepage").click()
-        # wd.find_element_by_name("homepage").clear()
-        # wd.find_element_by_name("homepage").send_keys(addres.homepage)
-        # wd.find_element_by_name("address2").click()
-        # wd.find_element_by_name("address2").clear()
-        # wd.find_element_by_name("address2").send_keys(addres.address2)
-        # wd.find_element_by_name("phone2").click()
-        # wd.find_element_by_name("phone2").clear()
-        # wd.find_element_by_name("phone2").send_keys(addres.phone2)
-        # wd.find_element_by_name("notes").click()
-        # wd.find_element_by_name("notes").clear()
-        # wd.find_element_by_name("notes").send_keys(addres.notes)
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
@@ -179,5 +121,56 @@ class AddresHelper:
                 cells = element.find_elements_by_tag_name("td")
                 lastname_text = cells[1].text
                 firstname_text = cells[2].text
-                self.addres_cache.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id))
+                all_phones = cells[5].text.splitlines()
+                self.addres_cache.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id, home=all_phones[0], mobile=all_phones[1], work=all_phones[2], phone2=all_phones[3]))
             return list(self.addres_cache)
+
+    def select_addres_edit_by_index(self, index):
+        wd = self.app.wd
+     #   wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
+        self.open_home()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[7]
+        cell.find_element_by_tag_name("a").click()
+
+    def select_addres_view_by_index(self, index):
+        wd = self.app.wd
+     #   wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
+        self.open_home()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[6]
+        cell.find_element_by_tag_name("a").click()
+
+    def get_addres_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.select_addres_edit_by_index(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        homephone = wd.find_element_by_name("home").get_attribute("value")
+        workphone = wd.find_element_by_name("work").get_attribute("value")
+        mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
+        secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
+        return Addres(firstname=firstname, lastname=lastname, id=id, home=homephone, work=workphone, mobile=mobilephone, phone2=secondaryphone)
+
+    def get_addres_info_from_view_page(self, index):
+        wd = self.app.wd
+        self.select_addres_edit_by_index(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        homephone = wd.find_element_by_name("home").get_attribute("value")
+        workphone = wd.find_element_by_name("work").get_attribute("value")
+        mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
+        secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
+        return Addres(firstname=firstname, lastname=lastname, id=id, home=homephone, work=workphone, mobile=mobilephone, phone2=secondaryphone)
+
+    def get_addres_from_view_page(self, index):
+        wd = self.app.wd
+        self.select_addres_view_by_index(index)
+        text = wd.find_element_by_id("content").text
+        homephone = re.search("H: (.*)", text).group(1)
+        workphone = re.search("W: (.*)", text).group(1)
+        mobilephone = re.search("M: (.*)", text).group(1)
+        secondaryphone = re.search("P: (.*)", text).group(1)
+        return Addres(home=homephone, work=workphone, mobile=mobilephone, phone2=secondaryphone)
