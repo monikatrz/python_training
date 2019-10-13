@@ -121,8 +121,10 @@ class AddresHelper:
                 cells = element.find_elements_by_tag_name("td")
                 lastname_text = cells[1].text
                 firstname_text = cells[2].text
-                all_phones = cells[5].text.splitlines()
-                self.addres_cache.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id, home=all_phones[0], mobile=all_phones[1], work=all_phones[2], phone2=all_phones[3]))
+                address_text = cells[3].text
+                all_emails = cells[4].text
+                all_phones = cells[5].text
+                self.addres_cache.append(Addres(lastname=lastname_text, firstname=firstname_text, id=id, address=address_text, all_emails_from_homepage=all_emails, all_phones_from_homepage=all_phones))
             return list(self.addres_cache)
 
     def select_addres_edit_by_index(self, index):
@@ -147,11 +149,15 @@ class AddresHelper:
         firstname = wd.find_element_by_name("firstname").get_attribute("value")
         lastname = wd.find_element_by_name("lastname").get_attribute("value")
         id = wd.find_element_by_name("id").get_attribute("value")
+        address = wd.find_element_by_name("address").get_attribute("value")
+        email = wd.find_element_by_name("email").get_attribute("value")
+        email2 = wd.find_element_by_name("email2").get_attribute("value")
+        email3 = wd.find_element_by_name("email3").get_attribute("value")
         homephone = wd.find_element_by_name("home").get_attribute("value")
         workphone = wd.find_element_by_name("work").get_attribute("value")
         mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
         secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
-        return Addres(firstname=firstname, lastname=lastname, id=id, home=homephone, work=workphone, mobile=mobilephone, phone2=secondaryphone)
+        return Addres(firstname=firstname, lastname=lastname, id=id, address=address, email=email, email2=email2, email3=email3,  home=homephone, work=workphone, mobile=mobilephone, phone2=secondaryphone)
 
     def get_addres_info_from_view_page(self, index):
         wd = self.app.wd
