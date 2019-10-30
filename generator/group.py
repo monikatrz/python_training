@@ -7,7 +7,7 @@ import getopt
 import sys
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "n:f:", ['number of groups', "file"])
+    opts, args = getopt.getopt(sys.argv[1:], "n:f:", ['number of addres', "file"])
 except getopt.GetoptError as err:
     getopt.usage()
     sys.exit(2)
@@ -20,7 +20,6 @@ for o, a in opts:
         n = int(a)
     elif o == "-f":
         f = a
-
 
 def random_string(prefix, maxlen):
     symbols = string.ascii_letters + string.digits + string.punctuation + " "*10
