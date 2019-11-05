@@ -9,7 +9,8 @@ def test_delete_some_address2(app, db, check_ui):
     addres = random.choice(old_addres)
     app.addres.delete_addres_by_id(addres.id)
     new_addres = db.get_addres_list()
-    assert len(old_addres) - 1 == len(new_addres)
+    assert len(old_addres) - 1 == app.addres.count()
     old_addres.remove(addres)
+    #assert old_addres == new_addres
     if check_ui:
         assert sorted(new_addres, key=Addres.id_or_max)== sorted(app.addres.get_addres_list())

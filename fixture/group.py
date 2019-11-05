@@ -69,7 +69,7 @@ class GroupHelper:
     def edit_group_by_id(self, id, new_group_data):
         wd = self.app.wd
         self.open_groups_page()
-        self.select_group_by_index(id)
+        self.select_group_by_id(id)
         # submit edit
         wd.find_element_by_name("edit").click()
         #wd.find_element_by_xpath("//input[@value='Edit group']").click()
