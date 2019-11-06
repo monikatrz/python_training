@@ -1,4 +1,18 @@
 import re
+from model.addres import Addres
+
+def test_all_address_on_homepage_with_db(app, db):
+    list_range = len(db.get_addres_list())
+    for row in range(list_range):
+        addres_from_home_page = sorted(app.addres.get_addres_list(), key=Addres.id_or_max)[row]
+        addres_from_db = sorted(db.get_addres_list(), key=Addres.id_or_max)[row]
+        assert sorted(addres_from_db.lastname) == sorted(addres_from_home_page.lastname)
+        assert sorted(addres_from_db.firstname) == sorted(addres_from_home_page.firstname)
+        assert sorted(address_clean(addres_from_db.address)) == sorted(addres_from_home_page.address)
+        assert sorted(merge_phones_like_on_home_page(addres_from_db)) == sorted(
+            addres_from_home_page.all_phones_from_homepage)
+        assert sorted(merge_emails_like_on_home_page(addres_from_db)) == sorted(
+            addres_from_home_page.all_emails_from_homepage)
 
 def test_phones_on_home_page(app):
     addres_from_home_page = app.addres.get_addres_list()[0]
@@ -39,3 +53,6 @@ def merge_phones_like_on_home_page(addres):
 
 def merge_emails_like_on_home_page(addres):
     return "\n".join(filter(lambda x: x != "", filter(lambda x: x is not None, [addres.email, addres.email2, addres.email3])))
+
+def address_clean(s):
+    return re.sub("  ", " ", s)
